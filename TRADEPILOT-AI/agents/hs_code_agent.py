@@ -1,7 +1,8 @@
 import os
 import json
 from typing import Dict, Any
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from dotenv import load_dotenv
 
 # Load .env file from project root (parent directory of agents/)
@@ -11,12 +12,13 @@ load_dotenv(dotenv_path)
 class HSCodeAgent:
     """
     HSCodeAgent determines the most likely 4-digit HS Code and category for a product description.
+    Uses the modern google-genai SDK.
     """
     def __init__(self) -> None:
         api_key: str | None = os.getenv("GEMINI_API_KEY")
+        self.client: genai.Client | None = None
         if api_key:
-            genai.configure(api_key=api_key)
-        self.model: genai.GenerativeModel = genai.GenerativeModel('gemini-2.5-flash')
+            self.client = genai.Client(api_key=api_key)
 
     def determine_hs_code(self, product: str) -> Dict[str, Any]:
         """
@@ -42,14 +44,35 @@ If the product is completely unrecognizable, return:
   "confidence": 0.0
 }}
 """
+        if not self.client:
+            return {
+                "hs_code": "0000",
+                "category": "Unknown",
+                "confidence": 0.0,
+                "error": "Gemini API client not configured"
+            }
+
         try:
-            response = self.model.generate_content(
-                prompt,
-                generation_config={"response_mime_type": "application/json"}
+            response = self.client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json"
+                )
             )
-            data: Dict[str, Any] = json.loads(response.text.strip())
+            
+            text = response.text.strip()
+            # Handle possible markdown wrap if output is enclosed
+            if text.startswith("```"):
+                lines = text.split("\n")
+                if lines[0].startswith("```json") or lines[0].startswith("```"):
+                    lines = lines[1:-1]
+                text = "\n".join(lines).strip()
+
+            data: Dict[str, Any] = json.loads(text)
             return data
         except Exception as e:
+            # Under quota limits or network failures, fall back to safe unknowns instead of crashing
             return {
                 "hs_code": "0000",
                 "category": "Unknown",
