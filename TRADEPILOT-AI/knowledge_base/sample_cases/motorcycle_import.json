@@ -1,0 +1,12 @@
+{
+  "case_id": "import_motorcycle_01",
+  "direction": "import",
+  "product": "Motorcycle (125cc)",
+  "hs_code": "8711.20.00",
+  "origin": "Japan",
+  "destination": "India",
+  "required_permits": [
+    "Import License",
+    "Emission Compliance Certificate"
+  ]
+}

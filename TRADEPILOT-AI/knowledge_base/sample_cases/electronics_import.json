@@ -1,0 +1,12 @@
+{
+  "case_id": "import_electronics_01",
+  "direction": "import",
+  "product": "Smartphone",
+  "hs_code": "8517.13.00",
+  "origin": "China",
+  "destination": "Germany",
+  "required_permits": [
+    "CE Marking Compliance",
+    "WEEE Declaration"
+  ]
+}

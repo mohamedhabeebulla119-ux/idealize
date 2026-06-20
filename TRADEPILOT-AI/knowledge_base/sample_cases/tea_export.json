@@ -1,0 +1,12 @@
+{
+  "case_id": "export_tea_01",
+  "direction": "export",
+  "product": "Black Tea",
+  "hs_code": "0902.30.00",
+  "origin": "Kenya",
+  "destination": "UK",
+  "required_permits": [
+    "Phytosanitary Certificate",
+    "Certificate of Origin"
+  ]
+}

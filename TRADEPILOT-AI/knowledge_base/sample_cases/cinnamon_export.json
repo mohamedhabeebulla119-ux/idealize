@@ -1,0 +1,12 @@
+{
+  "case_id": "export_cinnamon_01",
+  "direction": "export",
+  "product": "Ceylon Cinnamon",
+  "hs_code": "0906.11.00",
+  "origin": "Sri Lanka",
+  "destination": "USA",
+  "required_permits": [
+    "Phytosanitary Certificate",
+    "FDA Prior Notice"
+  ]
+}

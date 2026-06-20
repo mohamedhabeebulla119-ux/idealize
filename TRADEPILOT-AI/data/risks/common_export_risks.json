@@ -1,0 +1,14 @@
+{
+  "risks": [
+    {
+      "name": "SPS certification rejection",
+      "probability": "Low",
+      "impact": "Critical"
+    },
+    {
+      "name": "Documentation discrepancy",
+      "probability": "Medium",
+      "impact": "Medium"
+    }
+  ]
+}

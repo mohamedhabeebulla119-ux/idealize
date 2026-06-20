@@ -1,0 +1,16 @@
+{
+  "rules": [
+    {
+      "rule_name": "Valid HS Code Provided",
+      "weight": 0.3
+    },
+    {
+      "rule_name": "Tax Registration Verified",
+      "weight": 0.4
+    },
+    {
+      "rule_name": "Import/Export Permits Attained",
+      "weight": 0.3
+    }
+  ]
+}

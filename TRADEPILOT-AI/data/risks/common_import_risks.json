@@ -1,0 +1,14 @@
+{
+  "risks": [
+    {
+      "name": "Tariff reclassification",
+      "probability": "Medium",
+      "impact": "High"
+    },
+    {
+      "name": "Customs delays at port",
+      "probability": "High",
+      "impact": "Medium"
+    }
+  ]
+}
