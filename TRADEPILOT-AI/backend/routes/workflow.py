@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from agents.workflow_agent import WorkflowAgent
+from backend.cache import cache_manager
 
 router = APIRouter()
 agent = WorkflowAgent()

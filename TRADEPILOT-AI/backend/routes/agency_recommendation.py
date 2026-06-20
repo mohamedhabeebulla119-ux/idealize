@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from agents.agency_recommendation_agent import AgencyRecommendationAgent
+from backend.cache import cache_manager
 
 router = APIRouter()
 agent = AgencyRecommendationAgent()
@@ -18,9 +19,14 @@ def recommend_agencies(request: AgencyRecommendationRequest):
     if request.trade_type.lower() not in ["import", "export"]:
         raise HTTPException(status_code=400, detail="trade_type must be either 'import' or 'export'")
 
+    cached = cache_manager.get("agency", trade_type=request.trade_type, product=request.product, country=request.country)
+    if cached:
+        return cached
+
     result = agent.recommend_agencies(
         trade_type=request.trade_type.lower().strip(),
         product=request.product.strip(),
         country=request.country.strip()
     )
+    cache_manager.set("agency", result, trade_type=request.trade_type, product=request.product, country=request.country)
     return result
