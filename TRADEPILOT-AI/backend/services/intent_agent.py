@@ -6,7 +6,7 @@ class IntentAgent:
     def __init__(self):
         if settings.GEMINI_API_KEY:
             genai.configure(api_key=settings.GEMINI_API_KEY)
-        self.model = genai.GenerativeModel('gemini-2.0-flash')
+        self.model = genai.GenerativeModel('gemini-2.5-flash')
 
     def analyze(self, query: str) -> dict:
         prompt = f"""
