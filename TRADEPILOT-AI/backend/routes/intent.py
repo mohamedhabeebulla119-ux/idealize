@@ -12,5 +12,5 @@ class QueryRequest(BaseModel):
 def analyze_intent(request: QueryRequest):
     if not request.query.strip():
         raise HTTPException(status_code=400, detail="Query cannot be empty")
-    result = agent.analyze(request.query)
+    result = agent.process(request.query)
     return result

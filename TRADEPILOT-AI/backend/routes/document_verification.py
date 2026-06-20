@@ -1,22 +1,29 @@
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
-from typing import List
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 from agents.document_verification_agent import DocumentVerificationAgent
 
 router = APIRouter()
 agent = DocumentVerificationAgent()
 
-class VerificationRequest(BaseModel):
-    required_documents: List[str]
-    uploaded_documents: List[str]
-
 @router.post("/")
-def verify_documents(request: VerificationRequest):
-    if not request.required_documents:
-        raise HTTPException(status_code=400, detail="required_documents list cannot be empty")
+async def verify_document_vision(
+    document_type: str = Form(...),
+    expected_standards: str = Form(...),
+    file: UploadFile = File(...)
+):
+    if not file:
+        raise HTTPException(status_code=400, detail="No file uploaded")
         
-    result = agent.verify_documents(
-        required_documents=request.required_documents,
-        uploaded_documents=request.uploaded_documents
+    # Read the raw bytes into memory
+    file_bytes = await file.read()
+    mime_type = file.content_type
+    
+    if not mime_type:
+        mime_type = "application/octet-stream"
+        
+    result = agent.verify_document_vision(
+        document_type=document_type,
+        expected_standards=expected_standards,
+        file_bytes=file_bytes,
+        mime_type=mime_type
     )
     return result

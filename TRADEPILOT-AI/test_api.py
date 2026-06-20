@@ -59,3 +59,15 @@ if __name__ == "__main__":
     }
     test_endpoint("tariff-search", tariff_payload)
 
+    # 7. Test Advanced RAG: Casual Greeting
+    greeting_payload = {
+        "query": "Hi there! How are you doing today?"
+    }
+    test_endpoint("intent", greeting_payload)
+
+    # 8. Test Advanced RAG: Complex Decomposition
+    complex_payload = {
+        "query": "What are the customs duties for Cinnamon and how do I get an export license?"
+    }
+    test_endpoint("intent", complex_payload)
+

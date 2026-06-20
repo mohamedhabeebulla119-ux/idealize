@@ -1,86 +1,93 @@
 import os
 import json
-from typing import Dict, List, Any
-import google.generativeai as genai
+from typing import Dict, Any
+from google import genai
+from google.genai import types
 from dotenv import load_dotenv
 
-# Load .env file from project root (parent directory of agents/)
-dotenv_path: str = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
+# Load .env file from project root
+dotenv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
 load_dotenv(dotenv_path)
 
 class DocumentVerificationAgent:
     """
-    DocumentVerificationAgent semantically compares required compliance documents
-    against uploaded/provided documents to determine which are present,
-    which are missing, and provide action recommendations.
+    Multimodal DocumentVerificationAgent uses Gemini Vision to read physical
+    uploaded files (PDFs, Images) and verify they meet strict compliance standards.
     """
     
     def __init__(self) -> None:
         """
-        Initializes the agent and configures the Gemini API client.
+        Initializes the agent and configures the new Gemini API client.
         """
-        api_key: str | None = os.getenv("GEMINI_API_KEY")
+        api_key = os.getenv("GEMINI_API_KEY")
+        self.client = None
         if api_key:
-            genai.configure(api_key=api_key)
-        # Using verified gemini-2.5-flash model
-        self.model: genai.GenerativeModel = genai.GenerativeModel('gemini-2.5-flash')
+            self.client = genai.Client(api_key=api_key)
 
-    def verify_documents(
+    def verify_document_vision(
         self,
-        required_documents: List[str],
-        uploaded_documents: List[str]
+        document_type: str,
+        expected_standards: str,
+        file_bytes: bytes,
+        mime_type: str
     ) -> Dict[str, Any]:
         """
-        Compares uploaded documents against compliance required documents.
-        
-        Args:
-            required_documents (List[str]): List of documents required for trade.
-            uploaded_documents (List[str]): List of documents provided by the user.
-
-        Returns:
-            Dict[str, Any]: Dictionary containing verification_status,
-                            missing_documents, available_documents, recommendations.
+        Reads the physical document and checks it against compliance standards.
         """
-        prompt: str = f"""
-Compare the list of uploaded trade documents against the required compliance documents.
-Perform a semantic match (e.g. if 'invoice.pdf' or 'Commercial Invoice' matches 'Commercial Invoice').
+        if not self.client:
+            return {
+                "is_valid": False,
+                "extracted_data": {},
+                "errors": ["API Key missing. Cannot verify document."]
+            }
+            
+        prompt = f"""
+You are a highly meticulous Sri Lankan Customs Compliance Auditor.
+I have uploaded a physical document of type: "{document_type}".
 
-Required Documents: {json.dumps(required_documents)}
-Uploaded Documents: {json.dumps(uploaded_documents)}
+Your task is to carefully read and analyze the uploaded document.
+Check it against the following expected standards:
+{expected_standards}
 
 Determine:
-1. Available Documents: List of required documents that are successfully matched/provided.
-2. Missing Documents: List of required documents that have not been provided or matched.
-3. Verification Status: "Complete" if all required documents are provided, otherwise "Incomplete".
-4. Recommendations: Actionable steps on how to obtain missing items or verify document validity.
+1. Is the document valid and fully compliant with the expected standards?
+2. Extract the key data points from the document (e.g. Invoice Number, Date, Total Value, etc).
+3. If it is NOT valid, list the specific errors (e.g. "Missing Signature", "Date is expired").
 
-You must respond with a single, valid JSON object only matching the schema below. Do not include any markdown formatting, backticks, or extra text.
+You must respond with a single, valid JSON object only matching the schema below.
 
 JSON Schema:
 {{
-  "verification_status": "Complete" or "Incomplete",
-  "missing_documents": ["doc1", "doc2", ...],
-  "available_documents": ["doc1", "doc2", ...],
-  "recommendations": ["rec1", "rec2", ...]
+  "is_valid": true or false,
+  "extracted_data": {{"key": "value"}},
+  "errors": ["error 1", "error 2"]
 }}
 """
         try:
-            # Call Gemini and request structured JSON output
-            response = self.model.generate_content(
-                prompt,
-                generation_config={"response_mime_type": "application/json"}
+            # Create the multimodal part
+            doc_part = types.Part.from_bytes(data=file_bytes, mime_type=mime_type)
+            
+            response = self.client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=[prompt, doc_part],
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json"
+                )
             )
-            # Parse response text
-            data: Dict[str, Any] = json.loads(response.text.strip())
-            return data
+            
+            text = response.text.strip()
+            # Clean markdown if present
+            if text.startswith("```"):
+                lines = text.split("\n")
+                if lines[0].startswith("```"):
+                    lines = lines[1:-1]
+                text = "\n".join(lines).strip()
+                
+            return json.loads(text)
+            
         except Exception as e:
-            # Fallback error response
             return {
-                "verification_status": "Incomplete",
-                "missing_documents": required_documents,
-                "available_documents": [],
-                "recommendations": [
-                    f"Error occurred during verification: {str(e)}",
-                    "Please check your API key and connection."
-                ]
+                "is_valid": False,
+                "extracted_data": {},
+                "errors": [f"Error occurred during OCR vision processing: {str(e)}"]
             }
