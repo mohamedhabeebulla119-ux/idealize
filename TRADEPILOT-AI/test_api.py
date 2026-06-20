@@ -8,6 +8,10 @@ API_BASE_URL = "http://127.0.0.1:8000/api"
 time.sleep(2)
 
 def test_endpoint(endpoint: str, payload: dict):
+    # Sleep to avoid hitting Gemini Free Tier rate limits (15 RPM)
+    print("Waiting 5 seconds to avoid API rate limits...")
+    time.sleep(5)
+    
     url = f"{API_BASE_URL}/{endpoint}"
     print(f"\n--- Testing POST {url} ---")
     try:
@@ -47,4 +51,11 @@ if __name__ == "__main__":
         "product_value": 50000.0
     }
     test_endpoint("cost-estimation", cost_payload)
+
+    # 6. Test Tariff Search Endpoint
+    tariff_payload = {
+        "product": "Medical Devices",
+        "hs_code": "9018"
+    }
+    test_endpoint("tariff-search", tariff_payload)
 
