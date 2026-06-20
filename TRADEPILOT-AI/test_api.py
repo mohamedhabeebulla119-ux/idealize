@@ -39,3 +39,12 @@ if __name__ == "__main__":
 
     # 4. Test Documents Endpoint
     test_endpoint("documents", scenario_payload)
+
+    # 5. Test Cost Estimation Endpoint
+    cost_payload = {
+        "product": "Medical Devices",
+        "country": "Germany",
+        "product_value": 50000.0
+    }
+    test_endpoint("cost-estimation", cost_payload)
+
