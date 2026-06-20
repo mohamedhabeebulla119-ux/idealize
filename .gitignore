@@ -1,0 +1,27 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Environments & secrets
+.env
+.env.local
+.env.*
+!.env.example
+
+# Node/Frontend dependency & build outputs
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Editor configs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
