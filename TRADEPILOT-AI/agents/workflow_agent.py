@@ -1,6 +1,57 @@
+import os
+import json
+import google.generativeai as genai
+from dotenv import load_dotenv
+
+# Load .env file from project root (parent directory of agents/)
+dotenv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
+load_dotenv(dotenv_path)
+
 class WorkflowAgent:
     def __init__(self):
-        self.name = "Workflow Agent"
+        api_key = os.getenv("GEMINI_API_KEY")
+        if api_key:
+            genai.configure(api_key=api_key)
+        self.model = genai.GenerativeModel('gemini-2.5-flash')
 
-    def process(self, input_data: str) -> str:
-        return f"[{self.name}] Processed output for: {input_data}"
+    def generate_workflow(self, trade_type: str, product: str, country: str) -> dict:
+        prompt = f"""
+Generate a realistic, step-by-step global trade workflow roadmap for the following scenario:
+Trade Type: {trade_type}
+Product: {product}
+Country: {country}
+
+You must respond with a single, valid JSON object only matching the schema below. Do not include any markdown formatting, backticks, or extra text.
+
+JSON Schema:
+{{
+  "workflow": [
+    {{
+      "step": 1,
+      "title": "Short descriptive step title"
+    }},
+    {{
+      "step": 2,
+      "title": "Next step title"
+    }}
+  ]
+}}
+"""
+        try:
+            response = self.model.generate_content(
+                prompt,
+                generation_config={"response_mime_type": "application/json"}
+            )
+            data = json.loads(response.text.strip())
+            return data
+        except Exception as e:
+            # Fallback workflow in case of API issues
+            return {
+                "workflow": [
+                    {"step": 1, "title": f"Verify {trade_type.capitalize()} Eligibility for {product}"},
+                    {"step": 2, "title": f"Obtain necessary permits from {country}"},
+                    {"step": 3, "title": "Submit Customs Declaration"},
+                    {"step": 4, "title": "Settle Duties and Tariffs"}
+                ],
+                "error": str(e)
+            }
