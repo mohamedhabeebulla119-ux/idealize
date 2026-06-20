@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 from agents.cost_advisory_agent import CostAdvisoryAgent
+from backend.cache import cache_manager
 
 router = APIRouter()
 agent = CostAdvisoryAgent()
@@ -13,16 +14,23 @@ class CostEstimationRequest(BaseModel):
 @router.post("/")
 def estimate_cost(request: CostEstimationRequest):
     try:
+        cached = cache_manager.get("cost", product=request.product, country=request.country, product_value=request.product_value)
+        if cached:
+            return cached
+
         result = agent.generate_advisory(
             product=request.product.strip(),
             country=request.country.strip(),
             product_value=request.product_value
         )
-        return {
+        
+        output = {
             "hs_code": result["hs_code"],
             "category": result["category"],
             "tax_rates": result["tax_rates"],
             "cost_breakdown": result["cost_breakdown"]
         }
+        cache_manager.set("cost", output, product=request.product, country=request.country, product_value=request.product_value)
+        return output
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")

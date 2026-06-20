@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import List
 from agents.checklist_agent import ChecklistAgent
+from backend.cache import cache_manager
 
 router = APIRouter()
 agent = ChecklistAgent()
@@ -20,10 +21,15 @@ def generate_checklist(request: ChecklistRequest):
     if request.trade_type.lower() not in ["import", "export"]:
         raise HTTPException(status_code=400, detail="trade_type must be either 'import' or 'export'")
 
+    cached = cache_manager.get("checklist", trade_type=request.trade_type, product=request.product, documents=request.documents, approvals=request.approvals)
+    if cached:
+        return cached
+
     result = agent.generate_checklist(
         trade_type=request.trade_type.lower().strip(),
         product=request.product.strip(),
         documents=request.documents,
         approvals=request.approvals
     )
+    cache_manager.set("checklist", result, trade_type=request.trade_type, product=request.product, documents=request.documents, approvals=request.approvals)
     return result
