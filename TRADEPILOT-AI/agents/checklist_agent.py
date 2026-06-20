@@ -4,6 +4,10 @@ from typing import Dict, List, Any
 import google.generativeai as genai
 from dotenv import load_dotenv
 
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from rag.retriever import retrieve_context
+
 # Load .env file from project root (parent directory of agents/)
 dotenv_path: str = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
 load_dotenv(dotenv_path)
@@ -45,18 +49,32 @@ class ChecklistAgent:
             Dict[str, Any]: Dictionary containing readiness_score, status, 
                             completed_items, missing_items, next_actions.
         """
+        # Retrieve context from RAG
+        query = f"What are the mandatory documents, approvals, and checklists for {trade_type}ing {product}?"
+        context = retrieve_context(query)
+
         prompt: str = f"""
-Evaluate the trade readiness score, status, completed items, missing items, and next actions for the following Sri Lanka trade scenario:
+You are an expert Trade Checklist Evaluator.
+Evaluate the trade readiness score, status, completed items, missing items, and next actions for the following scenario strictly based on the Regulatory Context below.
+
+Scenario:
 Trade Type: {trade_type}
 Product: {product}
 Provided Documents: {json.dumps(documents)}
 Provided Approvals/Permits: {json.dumps(approvals)}
 
-Analyze if any essential documents or approvals (e.g. Import Permits, Customs Declarations, specific authority approvals, shipping documents) are missing for this product under Sri Lanka's trade regulations.
+--- Regulatory Context ---
+{context}
+--------------------------
+
+Analyze if any essential documents or approvals explicitly mentioned in the Regulatory Context are missing from the Provided list.
+If the Provided list has everything required in the Regulatory Context, the score should be 100.
 Calculate a numeric readiness score from 0 to 100:
 - 0 to 49: "Not Ready"
 - 50 to 89: "Partially Ready"
 - 90 to 100: "Ready"
+
+CRITICAL RULE: Base the missing items ONLY on the rules specified in the Regulatory Context.
 
 You must respond with a single, valid JSON object only matching the schema below. Do not include any markdown formatting, backticks, or extra text.
 

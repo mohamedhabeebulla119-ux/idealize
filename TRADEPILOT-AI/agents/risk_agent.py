@@ -4,6 +4,10 @@ from typing import Dict, List, Any
 import google.generativeai as genai
 from dotenv import load_dotenv
 
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from rag.retriever import retrieve_context
+
 # Load .env file from project root (parent directory of agents/)
 dotenv_path: str = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
 load_dotenv(dotenv_path)
@@ -46,16 +50,29 @@ class RiskAgent:
         Returns:
             Dict[str, Any]: Dictionary containing risk_level, risks, and recommendations.
         """
+        # Retrieve context from RAG
+        query = f"What are the common risks, delays, holds, and required documents for {trade_type}ing {product} involving {country}?"
+        context = retrieve_context(query)
+
         prompt: str = f"""
-Evaluate the global trade risk level, specific risks, and recommendations for the following Sri Lanka trade scenario:
+You are an expert Trade Risk Analyst.
+Evaluate the global trade risk level, specific risks, and recommendations for the following scenario strictly based on the Regulatory Context below.
+
+Scenario:
 Trade Type: {trade_type}
 Product: {product}
 Partner Country: {country}
 Provided Documents: {json.dumps(documents)}
 Provided Approvals/Permits: {json.dumps(approvals)}
 
+--- Regulatory Context ---
+{context}
+--------------------------
+
 Analyze if any essential documents or approvals (like Import Permits from Import & Export Control Department, Customs Declarations, special authority approvals, or shipping documents) are missing.
-Estimate the potential for customs delays, tariff disputes, or certification holds based on the provided list.
+Estimate the potential for customs delays, tariff disputes, or certification holds based on the provided list compared to the Regulatory Context.
+
+CRITICAL RULE: If the Regulatory Context does not contain enough information to determine the risks, state "Unable to determine risks based on current regulations" in the risks array, and set risk_level to "Medium".
 
 You must respond with a single, valid JSON object only matching the schema below. Do not include any markdown formatting, backticks, or extra text.
 

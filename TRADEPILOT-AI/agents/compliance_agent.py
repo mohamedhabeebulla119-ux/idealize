@@ -4,6 +4,10 @@ from typing import Dict, List, Any
 import google.generativeai as genai
 from dotenv import load_dotenv
 
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from rag.retriever import retrieve_context
+
 # Load .env file from project root (parent directory of agents/) to ensure GEMINI_API_KEY is available
 dotenv_path: str = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
 load_dotenv(dotenv_path)
@@ -39,17 +43,30 @@ class ComplianceAgent:
             Dict[str, Any]: A dictionary containing lists of required documents, 
                             agencies, and approvals/permits.
         """
+        # Retrieve context from RAG
+        query = f"What are the required documents, government agencies, and approvals for {trade_type}ing {product} involving {country}?"
+        context = retrieve_context(query)
+
         # Prompt structured for Sri Lanka trade landscape compliance
         prompt: str = f"""
-Analyze the trade compliance requirements for the following scenario under Sri Lanka's trade regulations:
+You are an expert Trade Compliance Advisor. 
+Analyze the trade compliance requirements for the following scenario strictly based on the Regulatory Context below.
+
+Scenario:
 Trade Type: {trade_type}
 Product: {product}
 Partner Country: {country}
+
+--- Regulatory Context ---
+{context}
+--------------------------
 
 Identify:
 1. Required Documents for customs clearance in Sri Lanka (e.g. Commercial Invoice, Packing List, Bill of Lading, Certificate of Origin, etc.).
 2. Required Government Agencies in Sri Lanka (e.g. Sri Lanka Customs, Import and Export Control Department, Sri Lanka Standards Institution, Coconut Development Authority, etc.).
 3. Required Approvals / Permits from these authorities.
+
+CRITICAL RULE: If the Regulatory Context does not contain the information required to identify documents, agencies, or approvals, you must return empty lists. Do not hallucinate external knowledge.
 
 You must respond with a single, valid JSON object only matching the schema below. Do not include any markdown formatting, backticks, or extra text.
 
