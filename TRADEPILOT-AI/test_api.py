@@ -1,0 +1,41 @@
+import requests
+import json
+import time
+
+API_BASE_URL = "http://127.0.0.1:8000/api"
+
+# Wait a moment for the server to start if run sequentially
+time.sleep(2)
+
+def test_endpoint(endpoint: str, payload: dict):
+    url = f"{API_BASE_URL}/{endpoint}"
+    print(f"\n--- Testing POST {url} ---")
+    try:
+        response = requests.post(url, json=payload)
+        response.raise_for_status()
+        print("Success! Response:")
+        print(json.dumps(response.json(), indent=2))
+    except Exception as e:
+        print(f"Failed! Error: {e}")
+        if hasattr(e, 'response') and e.response is not None:
+            print(f"Details: {e.response.text}")
+
+if __name__ == "__main__":
+    scenario_payload = {
+        "trade_type": "import",
+        "product": "Medical Devices",
+        "country": "Germany"
+    }
+
+    # 1. Test Compliance Endpoint
+    test_endpoint("compliance", scenario_payload)
+
+    # 2. Test Workflow Endpoint
+    test_endpoint("workflow", scenario_payload)
+
+    # 3. Test Checklist Endpoint (Adding doc fields)
+    checklist_payload = {**scenario_payload, "documents": ["Invoice"], "approvals": []}
+    test_endpoint("checklist", checklist_payload)
+
+    # 4. Test Documents Endpoint
+    test_endpoint("documents", scenario_payload)

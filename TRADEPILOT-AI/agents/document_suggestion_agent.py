@@ -4,6 +4,10 @@ from typing import Dict, List, Any
 import google.generativeai as genai
 from dotenv import load_dotenv
 
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from rag.retriever import retrieve_context
+
 # Load .env file from project root (parent directory of agents/)
 dotenv_path: str = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
 load_dotenv(dotenv_path)
@@ -41,13 +45,26 @@ class DocumentSuggestionAgent:
         Returns:
             Dict[str, Any]: Dictionary containing list of required_documents and their purposes.
         """
+        # Retrieve context from RAG
+        query = f"What are all the required trade documents and their specific regulatory or logistics purposes for {trade_type}ing {product} involving {country}?"
+        context = retrieve_context(query)
+
         prompt: str = f"""
-Identify and suggest all required trade documents and their specific regulatory/logistics purposes for the following trade scenario under Sri Lanka's regulations:
+You are an expert Trade Document Analyst.
+Identify and suggest all required trade documents and their specific regulatory/logistics purposes for the following trade scenario strictly based on the Regulatory Context below.
+
+Scenario:
 Trade Type: {trade_type}
 Product: {product}
 Partner Country: {country}
 
-For each document, provide its formal name (e.g. Commercial Invoice, Packing List, Bill of Lading, Import Control License, Certificate of Origin, etc.) and a concise purpose (e.g. Proof of purchase, Cargo details, shipment ownership, regulatory approval, etc.).
+--- Regulatory Context ---
+{context}
+--------------------------
+
+For each document found in the context, provide its formal name (e.g. Commercial Invoice, Packing List, Bill of Lading, Import Control License, Certificate of Origin, etc.) and a concise purpose based ONLY on the context (e.g. Proof of purchase, Cargo details, shipment ownership, regulatory approval, etc.).
+
+CRITICAL RULE: Base the suggested documents and their purposes ONLY on the rules specified in the Regulatory Context. If the context does not specify documents, return an empty array. Do not hallucinate external documents.
 
 You must respond with a single, valid JSON object only matching the schema below. Do not include any markdown formatting, backticks, or extra text.
 
