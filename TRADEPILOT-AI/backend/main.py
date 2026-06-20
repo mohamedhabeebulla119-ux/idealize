@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 # Add parent project root directory to sys.path to enable 'agents' import
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from routes import intent, workflow, compliance, risk, checklist, document_verification
+from routes import intent, workflow, compliance, risk, checklist, document_verification, agency_recommendation
 from config import settings
 
 app = FastAPI(
@@ -32,6 +32,7 @@ app.include_router(compliance.router, prefix="/api/compliance", tags=["Complianc
 app.include_router(risk.router, prefix="/api/risk", tags=["Risk"])
 app.include_router(checklist.router, prefix="/api/checklist", tags=["Checklist"])
 app.include_router(document_verification.router, prefix="/api/document-verification", tags=["Document Verification"])
+app.include_router(agency_recommendation.router, prefix="/api/agency-recommendation", tags=["Agency Recommendation"])
 
 @app.get("/health", tags=["Health"])
 def health_check():
