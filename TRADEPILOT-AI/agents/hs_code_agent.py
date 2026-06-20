@@ -5,6 +5,10 @@ from google import genai
 from google.genai import types
 from dotenv import load_dotenv
 
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from rag.retriever import retrieve_context
+
 # Load .env file from project root (parent directory of agents/)
 dotenv_path: str = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
 load_dotenv(dotenv_path)
@@ -24,9 +28,18 @@ class HSCodeAgent:
         """
         Determines HS Code, category name, and confidence score.
         """
+        query = f"What is the 4-digit HS code and category for {product}?"
+        context = retrieve_context(query)
+
         prompt: str = f"""
-Determine the most likely 4-digit HS Code and category name for the following product:
+Determine the most likely 4-digit HS Code and category name for the following product strictly based on the Regulatory Context below.
 Product: {product}
+
+--- Regulatory Context ---
+{context}
+--------------------------
+
+If the context provides the HS code for this specific product, use it. If not, use your best judgment to assign the standard global 4-digit HS code.
 
 You must respond with a single, valid JSON object only matching the schema below. Do not include any markdown formatting, backticks, or extra text.
 

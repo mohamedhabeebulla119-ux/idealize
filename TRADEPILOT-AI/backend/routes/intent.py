@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from services.intent_agent import IntentAgent
+from agents.intent_agent import IntentAgent
 
 router = APIRouter()
 agent = IntentAgent()

@@ -4,7 +4,10 @@ from typing import Dict, Any
 from google import genai
 from google.genai import types
 from dotenv import load_dotenv
+import sys
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from rag.retriever import retrieve_context
 # Load .env file from project root (parent directory of agents/)
 dotenv_path: str = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
 load_dotenv(dotenv_path)
@@ -34,9 +37,18 @@ class TariffSearchAgent:
                 "source": "fallback (no client)"
             }
 
+        query = f"What are the customs import tariff rates (Duty, VAT, PAL) for {product} with HS Code {hs_code}?"
+        context = retrieve_context(query)
+
         prompt = f"""
-Search the web to find the latest Sri Lanka Customs import tariff rates (Duty, VAT, PAL) for the product '{product}' (HS Code: '{hs_code}').
-Look for official Sri Lanka Customs tariff guides or reliable trade portals (like tariff.lk or customs.gov.lk).
+Determine the latest Sri Lanka Customs import tariff rates (Duty, VAT, PAL) for the product '{product}' (HS Code: '{hs_code}').
+Rely primarily on the internal Regulatory Context provided below. If the context gives specific rates, use them. If not, use your best estimation based on standard Sri Lankan customs rates.
+
+You should also check the internal Regulatory Context provided below. If the context gives the specific rates, prefer them as they are verified.
+
+--- Regulatory Context ---
+{context}
+--------------------------
 
 You must respond with a single, valid JSON object only matching the schema below. Do not include any markdown formatting, backticks, or extra text.
 
@@ -62,7 +74,6 @@ If you cannot find specific rates, return fallback values:
                 model="gemini-2.5-flash",
                 contents=prompt,
                 config=types.GenerateContentConfig(
-                    tools=[types.Tool(google_search=types.GoogleSearch())],
                     response_mime_type="application/json"
                 )
             )
