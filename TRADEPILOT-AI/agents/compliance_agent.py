@@ -72,6 +72,7 @@ You must respond with a single, valid JSON object only matching the schema below
 
 JSON Schema:
 {{
+  "message": "A helpful, conversational AI introduction explaining the compliance requirements.",
   "documents": ["doc1", "doc2", ...],
   "agencies": ["agency1", "agency2", ...],
   "approvals": ["approval1", "approval2", ...]
@@ -79,6 +80,7 @@ JSON Schema:
 
 If the query is extremely unclear or invalid, return:
 {{
+  "message": "I'm sorry, but I couldn't find exact compliance requirements for this query.",
   "documents": [],
   "agencies": [],
   "approvals": [],
@@ -100,6 +102,7 @@ If the query is extremely unclear or invalid, return:
         except Exception as e:
             # Clean fallback dictionary if the API key fails or another exception is thrown
             return {
+                "message": "There was an error retrieving the compliance requirements.",
                 "documents": [],
                 "agencies": [],
                 "approvals": [],

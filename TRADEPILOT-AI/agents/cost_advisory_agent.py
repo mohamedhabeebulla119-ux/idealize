@@ -8,14 +8,9 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from agents.hs_code_agent import HSCodeAgent
 from agents.tariff_search_agent import TariffSearchAgent
 
-# Import services from backend since uvicorn runs from TRADEPILOT-AI/backend/
-try:
-    from services.tax_rule_engine import TaxRuleEngine, TAX_RULES
-    from services.cost_calculator import CostCalculator
-except ImportError:
-    # Fallback for alternative python path configurations
-    from backend.services.tax_rule_engine import TaxRuleEngine, TAX_RULES
-    from backend.services.cost_calculator import CostCalculator
+# Import services from backend
+from backend.services.tax_rule_engine import TaxRuleEngine, TAX_RULES
+from backend.services.cost_calculator import CostCalculator
 
 class CostAdvisoryAgent:
     """

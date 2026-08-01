@@ -77,18 +77,23 @@ CRITICAL RULE: If the Regulatory Context does not contain enough information to 
 You must respond with a single, valid JSON object only matching the schema below. Do not include any markdown formatting, backticks, or extra text.
 
 JSON Schema:
-{{
-  "risk_level": "Low" or "Medium" or "High",
-  "risks": ["Risk 1", "Risk 2", ...],
-  "recommendations": ["Recommendation 1", "Recommendation 2", ...]
-}}
+{
+  "message": "A helpful, conversational AI introduction summarizing the risk profile.",
+  "risks": [
+    {
+      "type": "e.g., Regulatory, Financial, Logistics, Operational",
+      "description": "Specific details about the risk based on the context",
+      "severity": "High, Medium, or Low",
+      "mitigation": "Actionable advice to minimize this risk"
+    }
+  ]
+}
 
 If the scenario is invalid or cannot be processed, return:
-{{
-  "risk_level": "High",
-  "risks": ["Unable to determine compliance risks due to invalid scenario parameters."],
-  "recommendations": ["Re-verify all scenario inputs and documents list."]
-}}
+{
+  "message": "Unable to process the request.",
+  "risks": [{"type": "Error", "description": "Unable to determine compliance risks due to invalid scenario parameters.", "severity": "High", "mitigation": "Re-verify all scenario inputs and documents list."}]
+}
 """
         try:
             # Call Gemini and request structured JSON output
@@ -102,7 +107,13 @@ If the scenario is invalid or cannot be processed, return:
         except Exception as e:
             # Fallback response in case of API or parsing error
             return {
-                "risk_level": "High",
-                "risks": [f"Error occurred during risk evaluation: {str(e)}"],
-                "recommendations": ["Check API Key configuration and network connection."]
+                "message": "An error occurred during analysis.",
+                "risks": [
+                    {
+                        "type": "System",
+                        "description": f"Error occurred during risk evaluation: {str(e)}",
+                        "severity": "High",
+                        "mitigation": "Check API Key configuration and network connection."
+                    }
+                ]
             }

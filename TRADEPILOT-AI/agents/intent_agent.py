@@ -55,15 +55,22 @@ class IntentAgent:
     def _route_query(self, query: str) -> Dict[str, Any]:
         """Step 1: Intelligent Routing"""
         prompt = f"""
-Analyze the following user query. Determine if it is a 'greeting' (casual chat, hello, thanks) or a 'trade_query' (asking about imports, exports, customs, taxes, workflow).
-If it is a greeting, generate a polite reply. If it is a trade_query, reply field can be empty.
+Analyze the following user query. Determine its intent type. It must be one of the following:
+1. 'greeting': casual chat, hello, hi, thanks, how are you.
+2. 'workflow': asking about steps, process, guide, roadmap, how to import/export.
+3. 'compliance': asking about documents, requirements, permits, agencies, regulations, laws.
+4. 'risk': asking about risk, hazards, checks, verification, safety.
+5. 'checklist': asking for a checklist, preparation checklist, readiness.
+6. 'tariff': asking about hs codes, tariffs, taxes, duties, cost estimation.
+7. 'general': any other general trade or compliance question.
 
 User Query: "{query}"
 
 JSON Schema:
 {{
   "type": "greeting" or "trade_query",
-  "reply": "Polite response if greeting, else empty string"
+  "intent": "greeting" or "workflow" or "compliance" or "risk" or "checklist" or "tariff" or "general",
+  "reply": "Polite response if intent is greeting, else empty string"
 }}
 """
         res = self._safe_generate(prompt)
@@ -119,12 +126,25 @@ JSON Schema:
         try:
             # 1. Route
             route_data = self._route_query(query)
-            if route_data.get("type") == "greeting":
+            intent = route_data.get("intent", "general")
+            
+            if route_data.get("type") == "greeting" or intent == "greeting":
                 return {
                     "query": query,
                     "type": "greeting",
+                    "intent": "greeting",
                     "final_response": route_data.get("reply", "Hello! How can I assist you with trade compliance today?"),
                     "pipeline_steps": ["Routing completed"]
+                }
+            
+            # If the intent is a specialized trade intent, we let the frontend handle routing.
+            if intent in ["workflow", "compliance", "risk", "checklist", "tariff"]:
+                return {
+                    "query": query,
+                    "type": "trade_query",
+                    "intent": intent,
+                    "final_response": "",
+                    "pipeline_steps": ["Routed to specialized agent"]
                 }
             
             time.sleep(self.delay)
@@ -138,6 +158,7 @@ JSON Schema:
             return {
                 "query": query,
                 "type": "trade_query",
+                "intent": "general",
                 "draft_response": draft,
                 "evaluation": evaluation,
                 "final_response": evaluation.get("improved_response", draft),
@@ -147,6 +168,7 @@ JSON Schema:
             return {
                 "query": query,
                 "type": "error",
+                "intent": "general",
                 "final_response": f"An error occurred during query processing: {str(e)}",
                 "pipeline_steps": ["Failed"]
             }

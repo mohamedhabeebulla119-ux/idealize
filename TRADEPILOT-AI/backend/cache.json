@@ -1,5 +1,222 @@
 {
   "test_7ab35d2e263e7e986ce5654bda1372cf": {
     "result": "success"
+  },
+  "intent_852645197a1702723c0eb12ef204d986": {
+    "query": "how to import royal enfield",
+    "type": "trade_query",
+    "draft_response": "Based on the knowledge base provided, there is no relevant regulatory context found regarding how to import a Royal Enfield. Therefore, I cannot provide information on the specific procedures, regulations, or requirements for importing this vehicle.",
+    "evaluation": {
+      "relevant": false,
+      "reason": "The draft response clearly states that the information required to answer the query is not present in the knowledge base, indicating it cannot provide a full or accurate answer.",
+      "improved_response": "I apologize, but I do not have information on how to import a Royal Enfield in my current knowledge base."
+    },
+    "final_response": "I apologize, but I do not have information on how to import a Royal Enfield in my current knowledge base.",
+    "pipeline_steps": [
+      "Routed",
+      "Synthesized",
+      "Evaluated"
+    ]
+  },
+  "intent_f48d265f6f193a0c2b9025da0f082021": {
+    "query": "Give me a compliance checklist for cinnamon export",
+    "type": "trade_query",
+    "draft_response": "As TradePilot AI, I must inform you that the provided knowledge base context states: \"No relevant regulatory context found in the knowledge base.\"\n\nTherefore, I am unable to generate a compliance checklist for cinnamon export based on the information I have been given.",
+    "evaluation": {
+      "relevant": false,
+      "reason": "The Draft Response explicitly states that the necessary information ('No relevant regulatory context found') is not available in its knowledge base, making it unable to answer the query fully.",
+      "improved_response": "I apologize, but I couldn't find information regarding a compliance checklist for cinnamon export in my current knowledge base."
+    },
+    "final_response": "I apologize, but I couldn't find information regarding a compliance checklist for cinnamon export in my current knowledge base.",
+    "pipeline_steps": [
+      "Routed",
+      "Synthesized",
+      "Evaluated"
+    ]
+  },
+  "intent_803f7fd532846b8eba4f5f4a2881cf3b": {
+    "query": "What are the export requirements for tea to the UK?",
+    "type": "error",
+    "final_response": "An error occurred during query processing: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-2.5-flash\\nPlease retry in 1.941807267s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '1s'}]}}",
+    "pipeline_steps": [
+      "Failed"
+    ]
+  },
+  "workflow_a0723a26ff10a734d2160ca71639179a": {
+    "workflow": [
+      {
+        "step": 1,
+        "title": "Verify Export Eligibility for requirements for tea"
+      },
+      {
+        "step": 2,
+        "title": "Obtain necessary permits from Sri Lanka"
+      },
+      {
+        "step": 3,
+        "title": "Submit Customs Declaration"
+      },
+      {
+        "step": 4,
+        "title": "Settle Duties and Tariffs"
+      }
+    ],
+    "error": "429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-2.5-flash\nPlease retry in 947.232359ms. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerMinutePerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.5-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 5\n}\n, retry_delay {\n}\n]"
+  },
+  "intent_b2a60d2968b1b4436b203c207ea27466": {
+    "query": "What are the tariff codes for electronics?",
+    "type": "error",
+    "final_response": "An error occurred during query processing: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use a newer model for the latest features and improvements.', 'status': 'NOT_FOUND'}}",
+    "pipeline_steps": [
+      "Failed"
+    ]
+  },
+  "intent_6f7e51a5869d0a167c2cc87dd2b95908": {
+    "query": "how to import royal enfeild",
+    "type": "error",
+    "final_response": "An error occurred during query processing: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use a newer model for the latest features and improvements.', 'status': 'NOT_FOUND'}}",
+    "pipeline_steps": [
+      "Failed"
+    ]
+  },
+  "workflow_4ffd1996fcd4e4f439c7bc85270c166b": {
+    "workflow": [
+      {
+        "step": 1,
+        "title": "Verify Export Eligibility for royal enfeild"
+      },
+      {
+        "step": 2,
+        "title": "Obtain necessary permits from Sri Lanka"
+      },
+      {
+        "step": 3,
+        "title": "Submit Customs Declaration"
+      },
+      {
+        "step": 4,
+        "title": "Settle Duties and Tariffs"
+      }
+    ],
+    "error": "404 This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use a newer model for the latest features and improvements."
+  },
+  "intent_b562aa7ba11525cd58537f9ed78e1da1": {
+    "query": "how to import royal enfiled",
+    "type": "trade_query",
+    "draft_response": "Based on the provided knowledge base context, there is no information available regarding how to import a Royal Enfield or any relevant regulatory context for such an activity. Therefore, I cannot provide an answer to your query using the given information.",
+    "evaluation": {
+      "relevant": false,
+      "reason": "The Draft Response explicitly states that the requested information is not available in the provided knowledge base context.",
+      "improved_response": "I apologize, but I couldn't find any information about how to import a Royal Enfield in my current knowledge base."
+    },
+    "final_response": "I apologize, but I couldn't find any information about how to import a Royal Enfield in my current knowledge base.",
+    "pipeline_steps": [
+      "Routed",
+      "Synthesized",
+      "Evaluated"
+    ]
+  },
+  "workflow_f29a31a763122e0eaed9943e07455609": {
+    "workflow": []
+  },
+  "intent_32cfa814a51bb454f4889dc18bee711a": {
+    "query": "how to import electronic items",
+    "type": "trade_query",
+    "draft_response": "Based on the provided knowledge base context, there is no information available regarding how to import electronic items or any relevant regulatory context for such a process.",
+    "evaluation": {
+      "relevant": false,
+      "reason": "The draft response explicitly states that the information regarding importing electronic items is not available in the provided context, indicating that the knowledge base lacks the requested information.",
+      "improved_response": "I apologize, but I couldn't find any information on how to import electronic items in the provided knowledge base. Please let me know if you have any other questions."
+    },
+    "final_response": "I apologize, but I couldn't find any information on how to import electronic items in the provided knowledge base. Please let me know if you have any other questions.",
+    "pipeline_steps": [
+      "Routed",
+      "Synthesized",
+      "Evaluated"
+    ]
+  },
+  "workflow_a0f61995b46bd7c2c0be88a862ac0325": {
+    "workflow": []
+  },
+  "intent_e4fbccb82daae4c1a7f3724eb6d44802": {
+    "query": "how to export electronic items",
+    "type": "trade_query",
+    "draft_response": "Based on the provided knowledge base context, there is no information available regarding how to export electronic items or any relevant regulatory context for such a query.",
+    "evaluation": {
+      "relevant": false,
+      "reason": "The Draft Response explicitly states that the knowledge base does not contain information regarding the export of electronic items, thus failing to answer the original query.",
+      "improved_response": "I apologize, but I couldn't find any information about how to export electronic items in my current knowledge base."
+    },
+    "final_response": "I apologize, but I couldn't find any information about how to export electronic items in my current knowledge base.",
+    "pipeline_steps": [
+      "Routed",
+      "Synthesized",
+      "Evaluated"
+    ]
+  },
+  "intent_f463c2c833dc6b2fda592f2d5d9d56ab": {
+    "query": "how to import bike",
+    "type": "trade_query",
+    "draft_response": "Based on the provided knowledge base, there is no relevant information regarding the process of importing a bike. Therefore, I am unable to provide instructions on how to import a bike using the available context.",
+    "evaluation": {
+      "relevant": false,
+      "reason": "The draft response explicitly states that the information regarding importing a bike is not available in the provided knowledge base.",
+      "improved_response": "I apologize, but I couldn't find any information about how to import a bike in my current knowledge base."
+    },
+    "final_response": "I apologize, but I couldn't find any information about how to import a bike in my current knowledge base.",
+    "pipeline_steps": [
+      "Routed",
+      "Synthesized",
+      "Evaluated"
+    ]
+  },
+  "workflow_b5087953a2b559511028f2ec4f74640a": {
+    "workflow": []
+  },
+  "intent_414bdb5b72a911423b1139115a2f10d6": {
+    "query": "hi",
+    "type": "greeting",
+    "final_response": "Hello! How can I assist you today?",
+    "pipeline_steps": [
+      "Routing completed"
+    ]
+  },
+  "compliance_7bc7eb65219213fe50fd98c869460e38": {
+    "message": "As a Trade Compliance Advisor, I've analyzed the export scenario to Sri Lanka for a general product based strictly on the provided regulatory context. Since the knowledge base did not contain specific information for this scenario, I am unable to identify any specific required documents, government agencies, or approvals. Please note that in a real-world scenario, general export documents like a Commercial Invoice, Packing List, and Bill of Lading/Air Waybill are typically required, but these are not explicitly identified from the provided context.",
+    "documents": [],
+    "agencies": [],
+    "approvals": []
+  },
+  "intent_795cdbb7eda7e1a5d6f896ad31610c48": {
+    "query": "how to buy royalenfield",
+    "type": "trade_query",
+    "draft_response": "Based on the provided knowledge base context, there is no information available regarding how to buy Royal Enfield motorcycles. The context explicitly states, \"No relevant regulatory context found in the knowledge base,\" which indicates a lack of content for this query.\n\nTherefore, I am unable to provide instructions or guidance on purchasing Royal Enfield based on the information provided.",
+    "evaluation": {
+      "relevant": false,
+      "reason": "The Draft Response explicitly states that the knowledge base does not contain information to answer the query.",
+      "improved_response": "I apologize, but I couldn't find any information on how to buy Royal Enfield motorcycles in the knowledge base provided."
+    },
+    "final_response": "I apologize, but I couldn't find any information on how to buy Royal Enfield motorcycles in the knowledge base provided.",
+    "pipeline_steps": [
+      "Routed",
+      "Synthesized",
+      "Evaluated"
+    ]
+  },
+  "intent_15eba9976f723ad9499fecff295c3063": {
+    "query": "how to buy roayla enfield and wich county is best?",
+    "type": "trade_query",
+    "draft_response": "Based on the provided knowledge base, there is no information available on how to buy Royal Enfield or which county would be best for such a purchase. The knowledge base indicates \"No relevant regulatory context found.\" Therefore, I cannot provide a comprehensive answer to your query using the given context.",
+    "evaluation": {
+      "relevant": false,
+      "reason": "The Draft Response explicitly states that the knowledge base does not contain the information required to answer the query.",
+      "improved_response": "I apologize, but I don't have enough information in my current knowledge base to answer your question about how to buy a Royal Enfield or which county would be best for that purpose."
+    },
+    "final_response": "I apologize, but I don't have enough information in my current knowledge base to answer your question about how to buy a Royal Enfield or which county would be best for that purpose.",
+    "pipeline_steps": [
+      "Routed",
+      "Synthesized",
+      "Evaluated"
+    ]
   }
 }

@@ -40,7 +40,9 @@ CRITICAL RULE: Base the workflow steps ONLY on the provided Regulatory Context. 
 You must respond with a single, valid JSON object only matching the schema below. Do not include any markdown formatting, backticks, or extra text.
 
 JSON Schema:
+JSON Schema:
 {{
+  "message": "A helpful, conversational AI introduction explaining the steps.",
   "workflow": [
     {{
       "step": 1,
@@ -63,6 +65,7 @@ JSON Schema:
         except Exception as e:
             # Fallback workflow in case of API issues
             return {
+                "message": f"Here is the standard workflow for {trade_type}ing {product}:",
                 "workflow": [
                     {"step": 1, "title": f"Verify {trade_type.capitalize()} Eligibility for {product}"},
                     {"step": 2, "title": f"Obtain necessary permits from {country}"},
